@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<!--Ensure to use the correct XML header above-->
+
+<sqlMapConfig>
+    <!--*.properties file, relative to the classpath, used as placeholders-->
+    <properties resource="./mysql-data-source.properties"/>
+
+    <!--
+    cacheModelsEnabled: globally enable/disable cache models for a sqlMapClient, handy for debug;
+    enhancementEnabled: enables runtime bytecode enhancement to facilitate optimized JavaBean properties access as well as enhanced lazy loading;
+    lazyLoadingEnabled: globally enable/disable lazy loading for a sqlMapClient;
+    useStatementNamespaces: refer to mapped statements with fully qualified name, ex: queryForObject(“sqlMapName.statementName”);
+    defaultStatementTimeout: seconds, applied for all statements;
+    classInfoCacheEnabled: reduce startup time is many classes are reused;
+    statementCachingEnabled: prepare a local cache;
+    -->
+    <!--
+    <settings cacheModelsEnabled="true"
+              enhancementEnabled="true"
+              lazyLoadingEnabled="true"
+              maxRequests="128"
+              maxSessions="10"
+              maxTransactions="5"
+              useStatementNamespaces="false"
+              defaultStatementTimeout="5"
+              statementCachingEnabled="true"
+              classInfoCacheEnabled="true"
+            />
+    -->
+
+    <!--
+    built-in type alias:
+    Transaction Manager Alias:
+    JDBC        com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig
+    JTA         com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig
+    EXTERNAL    com.ibatis.sqlmap.engine.transaction.external.ExternalTransactionConfig
+    Data Source Factory Aliases:
+    SIMPLE      com.ibatis.sqlmap.engine.datasource.SimpleDataSourceFactory
+    DBCP        com.ibatis.sqlmap.engine.datasource.DbcpDataSourceFactory
+    JNDI        com.ibatis.sqlmap.engine.datasource.JndiDataSourceFactory
+    -->
+    <typeAlias alias="" type=""/>
+
+    <!--config datasource using SimpleDataSource-->
+    <!--
+    attention:  ibatis 2.3.4 only allow a single data source;
+                use multiple properties files for multiple configurations;
+    -->
+    <transactionManager type="JDBC">
+        <dataSource type="SIMPLE">
+            <property name="JDBC.Driver" value="${driver}"/>
+            <property name="JDBC.ConnectionURL" value="${url}"/>
+            <property name="JDBC.Username" value="${username}"/>
+            <property name="JDBC.Password" value="${password}"/>
+            <!-- optional properties below -->
+            <property name="JDBC.DefaultAutoCommit" value="true"/>
+            <property name="Pool.MaximumActiveConnections" value="10"/>
+            <property name="Pool.MaximumIdleConnections" value="5"/>
+            <property name="Pool.MaximumCheckoutTime" value="120000"/>
+            <property name="Pool.TimeToWait" value="500"/>
+            <!--
+            <property name="Pool.PingQuery" value="select 1 from ACCOUNT"/>
+            <property name="Pool.PingEnabled" value="false"/>
+            <property name="Pool.PingConnectionsOlderThan" value="1"/>
+            <property name="Pool.PingConnectionsNotUsedFor" value="1"/>
+            -->
+        </dataSource>
+    </transactionManager>
+
+    <!--identify all sql map files to be loaded by this sql map, relative to classpath-->
+    <!--ex, classpath resource: <sqlMap resource="com/ibatis/examples/sql/Account.xml" />-->
+    <sqlMap resource="org/pieux/ibatis_demo/Post.xml"/>
+</sqlMapConfig>

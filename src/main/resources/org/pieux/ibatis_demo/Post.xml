@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Post">
+
+    <!--
+    <statement id=""
+                parameterClass=""
+                resultClass=""
+                parameterMap=""
+                resultMap=""
+                cacheModel=""
+                timeout="">
+    </statement>
+    -->
+
+    <cacheModel id="post_cache" type="LRU">
+        <flushInterval hours="24" />
+        <flushOnExecute statement="insertPost" />
+        <flushOnExecute statement="updatePost" />
+        <flushOnExecute statement="deletePost" />
+        <property name="size" value="1000" />
+    </cacheModel>
+
+    <typeAlias alias="post" type="org.pieux.ibatis_demo.Post" />
+
+    <resultMap id="post_result" class="post">
+        <result property="id" column="post_id" />
+        <result property="publish_date" column="publish_date" />
+        <result property="content" column="post_content" />
+    </resultMap>
+
+    <select id="listPost"
+            resultMap="post_result"
+            cacheModel="post_cache">
+        SELECT
+        *
+        FROM post;
+    </select>
+
+    <select id="getPost"
+            parameterClass="int"
+            resultMap="post_result"
+            cacheModel="post_cache">
+        SELECT
+        *
+        FROM post
+        WHERE post_id = #id#;
+    </select>
+
+    <select id="dynamicGetPost"
+            cacheModel="post_cache"
+            resultMap="post_result">
+       SELECT *
+       FROM post
+       <isGreaterThan prepend="AND" property="id" compareValue="5">
+           WHERE post_id=#id#
+       </isGreaterThan>
+       ORDER BY publish_date
+    </select>
+
+
+    <insert id="insertPost" parameterClass="post">
+        INSERT into post (title, author, publish_date, post_content)
+        VALUES (#title#, #author#, #publish_date#, #content#)
+    </insert>
+
+    <delete id="deletePost" parameterClass="int">
+        DELETE FROM post
+        WHERE post_id = #id#
+    </delete>
+
+</sqlMap>
